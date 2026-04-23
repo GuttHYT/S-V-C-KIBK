@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>KIBK - Registrar</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header><h1>KIBK Lanches</h1></header>
+  <div class="container">
+    <div class="card" style="max-width:450px;margin:30px auto;">
+      <h2 style="text-align:center;">Criar Conta</h2>
+      
+      <input id="name" type="text" placeholder="Seu nome completo" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+      <input id="whatsapp" type="tel" placeholder="WhatsApp (com DDD)" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+      <input id="email" type="email" placeholder="E-mail" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+      <input id="password" type="password" placeholder="Senha (mínimo 6 caracteres)" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+      
+      <select id="role" style="width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;">
+        <option value="buyer">Sou comprador</option>
+        <option value="seller">Sou vendedor</option>
+      </select>
+
+      <button onclick="registerUser()" class="btn" style="width:100%;margin-top:15px;">Registrar</button>
+      <p style="text-align:center;margin-top:15px;">
+        Já tem conta? <a href="login.html">Entrar</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
