@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3°B Lanches - Entrar</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header>
+    <h1>3°B Lanches</h1>
+  </header>
+
+  <div class="container">
+    <div class="card" style="max-width:400px; margin:40px auto;">
+      <h2 style="text-align:center; margin-bottom:20px;">Entrar</h2>
+      
+      <input id="email" type="email" placeholder="E-mail" style="width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #ccc;">
+      <input id="password" type="password" placeholder="Senha" style="width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #ccc;">
+      
+      <button onclick="login()" class="btn" style="width:100%;">Entrar</button>
+      
+      <p style="text-align:center; margin-top:15px;">
+        Não tem conta? <a href="register.html">Registrar</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

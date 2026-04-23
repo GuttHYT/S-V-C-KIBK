@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIBK - Dashboard</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header>
+    <h1>KIBK Lanches</h1>
+    <div id="user-info" style="font-size: 0.9rem; margin-top: 5px;"></div>
+  </header>
+
+  <nav>
+    <a href="dashboard.html">Início</a>
+    <span id="seller-links" style="display:none;">
+        <a href="vendors.html">Meus Produtos</a>
+    </span>
+    <a href="#" onclick="logout()">Sair</a>
+  </nav>
+
+  <div class="container">
+    <div id="announcements"></div>
+
+    <h2 style="margin-bottom: 15px;">Salgados</h2>
+    <div id="category-salgados" class="product-grid">
+      </div>
+
+    <h2 style="margin-top: 40px; margin-bottom: 15px;">Doces e Outros</h2>
+    <div id="category-doces" class="product-grid">
+      </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

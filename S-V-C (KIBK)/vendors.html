@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Vendedor - KIBK Lanches</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <header><h1>Gerenciar Meus Produtos</h1></header>
+    <nav>
+        <a href="dashboard.html">Voltar ao Início</a>
+        <a href="#" onclick="logout()">Sair</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h3 id="form-title">Adicionar Novo Produto</h3>
+            <input type="hidden" id="product-id">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" id="p-name" placeholder="Nome do Produto (Ex: Bolo de Pote)">
+                <input type="number" id="p-price" placeholder="Preço (Ex: 5.50)" step="0.01">
+                <input type="number" id="p-qty" placeholder="Quantidade em Estoque">
+                <select id="p-category">
+                    <option value="doces">Doces / Paçoca / Amendoim</option>
+                    <option value="salgados">Salgados</option>
+                </select>
+            </div>
+            <input type="text" id="p-img" placeholder="Link da Imagem do Produto" style="width: 100%; margin-top: 10px;">
+            
+            <div style="margin-top: 15px;">
+                <button class="btn" onclick="saveProduct()">Salvar Produto</button>
+                <button class="btn" style="background:#666;" onclick="clearForm()">Cancelar</button>
+            </div>
+            <div>
+                <h3>Configurar meus dias de venda</h3>
+                <p>Marque os dias que você costuma levar os produtos:</p>
+                <label><input type="checkbox" class="days" value="Segunda"> Seg</label>
+                <label><input type="checkbox" class="days" value="Terça"> Ter</label>
+                <label><input type="checkbox" class="days" value="Quarta"> Qua</label>
+                <label><input type="checkbox" class="days" value="Quinta"> Qui</label>
+                <label><input type="checkbox" class="days" value="Sexta"> Sex</label>
+                <button class="btn" onclick="updateSellingDays()" style="margin-top:10px; display:block;">Atualizar Dias</button>
+            </div>
+        </div>
+
+        <hr>
+        <h2>Meus Produtos Cadastrados</h2>
+        <div id="my-products-list" class="product-grid">
+            </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/products.js"></script>
+</body>
+</html>
