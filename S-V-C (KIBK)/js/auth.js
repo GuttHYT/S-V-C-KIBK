@@ -45,7 +45,7 @@ async function registerUser() {
     if (role === "seller") {
       await db.collection('vendors').doc(uid).set({
         uid: uid,
-        sellerName: name.split(" ")[0],
+        sellerName: name,
         sellingDays: [],           // Karina vai ter ["terça", "quinta"]
         sellingMessage: "",
         active: true,

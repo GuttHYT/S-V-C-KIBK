@@ -1,0 +1,21 @@
+<div class="container">
+    <h1>Painel do Diretor (Admin)</h1>
+    
+    <div class="grid-admin">
+        <div class="card">
+            <h3>🎨 Estilo do Site</h3>
+            <label>Cor dos Botões:</label>
+            <input type="color" id="cfg-color" onchange="previewColor(this.value)">
+            <br><br>
+            <label>Nome da Loja:</label>
+            <input type="text" id="cfg-name" placeholder="Ex: Cantina do 3ºB">
+            <button class="btn" onclick="saveSettings()">Aplicar Globalmente</button>
+        </div>
+
+        <div class="card">
+            <h3>👥 Usuários e Devedores</h3>
+            <div id="admin-orders-list">
+                </div>
+        </div>
+    </div>
+</div>

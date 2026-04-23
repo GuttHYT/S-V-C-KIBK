@@ -49,3 +49,142 @@ nav a {
     height: 150px;
     object-fit: cover;
 }
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+:root {
+    --primary-color: #2E7D32; /* Cor padrão que você poderá mudar no Admin */
+    --bg-color: #f4f4f9;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    filter: brightness(1.2);
+}
+
+/* Estilo para a foto de perfil circular */
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    margin-bottom: 15px;
+}
+
+/* Modal de Escolha de Pagamento */
+.modal {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* --- ESTILOS DA PÁGINA DE PERFIL --- */
+
+.profile-pic {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    margin-bottom: 15px;
+    background-color: #eee;
+}
+
+#pix-section {
+    background-color: #e8f5e9; /* Um verde bem clarinho */
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 5px solid var(--primary-color);
+    margin-top: 20px;
+}
+
+#pix-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: #1b5e20;
+    font-size: 0.9rem;
+}
+
+#p-pix {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: monospace; /* Estilo de código para chaves Pix */
+    font-size: 1rem;
+}
+
+.profile-info-item {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.profile-info-item strong {
+    color: #555;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    display: block;
+}
+
+.profile-info-item span {
+    font-size: 1.1rem;
+    color: #222;
+    font-weight: 500;
+}
+
+/* Efeito suave ao focar nos inputs */
+#p-photo-url:focus, #p-pix:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
+}
+
+footer {
+  position: relative;
+  width: 20%;
+  height: auto;
+  text-align: center;
+  left: 39%;
+  right: calc(39%);
+  color: white;
+  background: linear-gradient(70deg, #000000, #4b0088, #8d0000, #000000);
+  background-size: 400% 400%;
+  padding: 8px 15px;
+  border-radius: 15px;
+  cursor: default;
+  font-weight: bolder;
+  animation: mudarFundo 5s ease infinite;
+}
+
+@keyframes mudarFundo {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

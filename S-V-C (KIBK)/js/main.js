@@ -1,4 +1,4 @@
-// Verifica login
+// Verifica login e permissões
 auth.onAuthStateChanged(user => {
     if (user) {
         checkUserRole(user.uid);
@@ -9,137 +9,101 @@ auth.onAuthStateChanged(user => {
 });
 
 async function checkUserRole(uid) {
-    const userDoc = await db.collection('users').doc(uid).get();
-    if (userDoc.exists) {
-        const userData = userDoc.data();
-        document.getElementById('user-info').innerText = `Olá, ${userData.name}!`;
-        if (userData.role === 'seller' || userData.isAdmin) {
-            document.getElementById('seller-links').style.display = 'inline';
+    try {
+        const userDoc = await db.collection('users').doc(uid).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            const userInfoElem = document.getElementById('user-info');
+            if (userInfoElem) userInfoElem.innerText = `Olá, ${userData.name}!`;
+            
+            if (userData.role === 'seller' || userData.isAdmin) {
+                document.getElementById('seller-links').style.display = 'inline';
+                document.getElementById('noti-bell').style.display = 'block';
+            }
+            if (userData.isAdmin === true) {
+                document.getElementById('admin-link').style.display = 'inline';
+            }
         }
+    } catch (e) {
+        console.error("Erro ao verificar papel do usuário:", e);
     }
 }
 
 async function loadProducts() {
-    const productsContainerSalgados = document.getElementById('category-salgados');
-    const productsContainerDoces = document.getElementById('category-doces');
+    const containerSalgados = document.getElementById('category-salgados');
+    const containerDoces = document.getElementById('category-doces');
+    
+    if (!containerSalgados || !containerDoces) return;
 
-    console.log("Iniciando carregamento de produtos...");
-
-    // 1. Primeiro pegamos os vendedores para ter os nomes e dias de venda
-    const vendorsSnap = await db.collection('vendors').get();
+    // 1. Carrega dados de todos os vendedores primeiro para evitar erros de undefined
     const vendorsData = {};
-    vendorsSnap.forEach(doc => {
-        vendorsData[doc.id] = doc.data();
-    });
+    try {
+        const vendorsSnap = await db.collection('vendors').get();
+        vendorsSnap.forEach(doc => {
+            vendorsData[doc.id] = doc.data();
+        });
+    } catch (e) {
+        console.warn("Aviso: Não foi possível carregar a lista de vendedores.");
+    }
 
     // 2. Escuta os produtos em tempo real
     db.collection('products').onSnapshot(snapshot => {
-        console.log("Snapshot recebido! Total de produtos:", snapshot.size);
-        
-        productsContainerSalgados.innerHTML = "";
-        productsContainerDoces.innerHTML = "";
+        containerSalgados.innerHTML = "";
+        containerDoces.innerHTML = "";
 
         if (snapshot.empty) {
-            productsContainerSalgados.innerHTML = "<p>Nenhum produto cadastrado ainda.</p>";
+            containerSalgados.innerHTML = "<p>Nenhum produto cadastrado ainda.</p>";
             return;
         }
 
         snapshot.forEach(doc => {
             const product = doc.data();
             const productId = doc.id;
-            const sellerInfo = vendorsData[product.sellerId] || { sellerName: "Vendedor" };
             
+            // PROTEÇÃO: Se o vendedor não existir ou não tiver dias, define como vazio
+            const sellerInfo = vendorsData[product.sellerId] || {};
+            const days = sellerInfo.sellingDays || [];
             const isEsgotado = product.quantity <= 0;
 
-            // Lógica dos dias (Karina)
-            let daysHtml = "";
-            if (sellerInfo.sellingDays && sellerInfo.sellingDays.length > 0) {
-                daysHtml = `<p style="color: #d32f2f; font-size: 0.75rem; font-weight: bold; margin-bottom:5px;">📅 Vendas: ${sellerInfo.sellingDays.join(', ')}</p>`;
-            }
+            const daysHtml = days.length > 0 
+                ? `<p style="color:#d32f2f; font-size:0.75rem; font-weight:bold; margin:5px 0;">📅 ${days.join(', ')}</p>` 
+                : `<p style="color:#666; font-size:0.7rem; margin:5px 0;">📅 Ver com vendedor</p>`;
 
             const card = document.createElement('div');
             card.className = 'card';
-            card.style.position = "relative";
-            
             card.innerHTML = `
-                <img src="${product.imageUrl || 'https://via.placeholder.com/150'}" style="width:100%; height:120px; object-fit:cover; border-radius:8px; filter: ${isEsgotado ? 'grayscale(1)' : 'none'};">
-                <h3 style="font-size: 1.1rem; margin: 10px 0 5px 0;">${product.name}</h3>
-                <p style="color: #666; font-size: 0.8rem; margin-bottom: 5px;">De: ${sellerInfo.sellerName}</p>
+                <div style="position: relative;">
+                    <img src="${product.imageUrl || 'https://via.placeholder.com/150'}" 
+                         style="width:100%; height:130px; object-fit:cover; border-radius:8px; display:block; 
+                         filter: ${isEsgotado ? 'grayscale(1) opacity(0.6)' : 'none'};">
+                    ${isEsgotado ? '<span style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.7); color:white; padding:5px 10px; border-radius:5px; font-weight:bold;">ESGOTADO</span>' : ''}
+                </div>
+                <h3 style="margin-top:10px; font-size:1.1rem;">${product.name}</h3>
                 ${daysHtml}
-                <p style="font-weight: bold; color: #2E7D32; font-size: 1.1rem;">R$ ${product.price.toFixed(2)}</p>
-                <p style="font-size: 0.85rem; margin: 5px 0; color: ${isEsgotado ? 'red' : '#333'}">
-                    ${isEsgotado ? '<strong>ESGOTADO</strong>' : 'Estoque: ' + product.quantity}
-                </p>
-
-                <div style="margin-top: 10px; display: ${isEsgotado ? 'none' : 'flex'}; gap: 5px; align-items: center;">
+                <p style="color: var(--primary-color); font-weight: bold; font-size: 1.2rem;">R$ ${Number(product.price).toFixed(2)}</p>
+                <p style="font-size:0.8rem; color:#666;">Disponível: ${product.quantity}</p>
+                
+                <div style="margin-top: 12px; display: ${isEsgotado ? 'none' : 'flex'}; gap: 8px;">
                     <input type="number" id="qty-${productId}" value="1" min="1" max="${product.quantity}" 
                            style="width: 45px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button class="btn" onclick="orderProduct('${productId}')" style="flex: 1; padding: 8px; font-size: 0.8rem;">Reservar</button>
+                    <button class="btn" onclick="orderProduct('${productId}')" style="flex:1; padding: 8px;">Reservar</button>
                 </div>
             `;
 
             if (product.category === 'salgados') {
-                productsContainerSalgados.appendChild(card);
+                containerSalgados.appendChild(card);
             } else {
-                productsContainerDoces.appendChild(card);
+                containerDoces.appendChild(card);
             }
         });
     }, error => {
-        console.error("Erro no Snapshot:", error);
-        alert("Erro ao carregar produtos. Verifique as regras do Database.");
+        console.error("Erro no Snapshot do Firestore:", error);
+        containerSalgados.innerHTML = "<p>Erro ao carregar produtos. Verifique as regras do Firebase.</p>";
     });
 }
 
-async function orderProduct(productId) {
-    const qtyInput = document.getElementById(`qty-${productId}`);
-    const chosenQty = parseInt(qtyInput.value);
-
-    try {
-        const userDoc = await db.collection('users').doc(auth.currentUser.uid).get();
-        const buyerData = userDoc.data();
-
-        const productDoc = await db.collection('products').doc(productId).get();
-        const product = productDoc.data();
-
-        if (chosenQty > product.quantity || isNaN(chosenQty) || chosenQty <= 0) {
-            alert("Quantidade inválida ou acima do estoque!");
-            return;
-        }
-
-        const total = product.price * chosenQty;
-        if (confirm(`Confirmar ${chosenQty}x ${product.name}?\nTotal: R$ ${total.toFixed(2)}`)) {
-            
-            // Subtrai estoque
-            await db.collection('products').doc(productId).update({
-                quantity: product.quantity - chosenQty
-            });
-
-            // Salva pedido
-            await db.collection('orders').add({
-                buyerId: auth.currentUser.uid,
-                buyerName: buyerData.name,
-                buyerWhatsapp: buyerData.whatsapp,
-                sellerId: product.sellerId,
-                productName: product.name,
-                quantity: chosenQty,
-                totalPrice: total,
-                status: "pendente",
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            // Notifica Zap
-            const sellerDoc = await db.collection('users').doc(product.sellerId).get();
-            const sellerData = sellerDoc.data();
-            const msg = `Oi! Sou ${buyerData.name}. Reservei ${chosenQty}x ${product.name} pelo site!`;
-            const link = `https://wa.me/55${sellerData.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`;
-            
-            window.open(link, '_blank');
-        }
-    } catch (e) {
-        alert("Erro: " + e.message);
-    }
-}
-
 function logout() {
-    auth.signOut().then(() => window.location.href = 'login.html');
+    auth.signOut().then(() => {
+        window.location.href = 'login.html';
+    });
 }

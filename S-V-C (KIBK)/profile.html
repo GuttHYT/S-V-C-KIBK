@@ -1,0 +1,71 @@
+<head>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<div class="container">
+    <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center;">
+        <h2 style="color: var(--primary-color); margin-bottom: 20px;">👤 Meu Perfil</h2>
+        
+        <div style="position: relative; display: inline-block;">
+            <img id="display-pic" src="assets/default-user.png" 
+                 style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color);">
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <input type="text" id="p-photo-url" placeholder="Link da foto (URL)" 
+                   style="width: 90%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+        </div>
+        
+        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+        
+        <div style="text-align: left; margin-top: 20px;">
+    <div class="profile-info-item">
+        <strong>Nome Completo</strong>
+        <span id="span-name">Carregando...</span>
+    </div>
+    
+    <div class="profile-info-item">
+        <strong>E-mail de Acesso</strong>
+        <span id="span-email">Carregando...</span>
+    </div>
+    
+    <div class="profile-info-item">
+        <strong>WhatsApp / Contato</strong>
+        <span id="span-phone">Carregando...</span>
+    </div>
+    
+    <div id="pix-section" style="display:none;">
+        <label><strong>Minha Chave Pix (Vendedor)</strong></label>
+        <input type="text" id="p-pix" placeholder="CPF, E-mail ou Celular">
+            
+            <div id="pix-section" style="display:none; margin-top: 15px; border-top: 2px dashed #ddd; padding-top: 15px;">
+                <label style="font-weight: bold; color: #2E7D32;">🔑 Sua Chave Pix (Para receber pagamentos):</label>
+                <input type="text" id="p-pix" placeholder="CPF, E-mail ou Telefone" 
+                       style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #2E7D32;">
+                <p style="font-size: 0.7rem; color: #666; margin-top: 5px;">* Essa chave aparecerá para o cliente após a reserva.</p>
+            </div>
+        </div>
+
+        <button class="btn" style="margin-top: 25px; width: 100%; padding: 12px;" onclick="updateProfile()">
+            💾 Salvar Alterações
+        </button>
+        
+        <button class="btn" style="margin-top: 10px; width: 100%; background: #666;" onclick="window.location.href='dashboard.html'">
+            Voltar ao Início
+        </button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script src="js/firebase-config.js"></script>
+
+<script src="js/profile.js"></script>
+
+</div>
+<footer>
+  <p>Criado por Gustavo Santana D. M.</p>
+  <p>&copy; Direitos reservados 2026</p>
+</footer>
