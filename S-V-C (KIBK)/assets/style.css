@@ -164,11 +164,11 @@ body {
 
 footer {
   position: relative;
-  width: 20%;
+  width: 98%;
   height: 30%;
   text-align: center;
-  left: 40%;
-  right: calc(39%);
+  left: 1%;
+  right:auto;
   color: white;
   background: linear-gradient(70deg, #000000, #4b0088, #8d0000, #000000);
   background-size: 400% 400%;
@@ -213,5 +213,25 @@ footer {
     select {
         width: 100% !important; /* Garante que inputs não fiquem pequenos */
         font-size: 16px; /* Evita o zoom automático do iOS ao focar no campo */
+      }
+}
+
+@media (max-width: 600px) {
+    #noti-box {
+        /* Fixa a posição no centro da tela, independente de onde está o botão */
+        position: fixed !important;
+        top: 80px !important;    /* Distância do topo */
+        left: 5% !important;     /* Margem de 5% na esquerda */
+        right: 5% !important;    /* Margem de 5% na direita */
+        width: 90% !important;   /* Ocupa 90% da largura da tela */
+        max-width: none !important;
+        transform: none !important;
+        z-index: 10000;          /* Garante que fica na frente de tudo */
+    }
+
+    /* Ajuste interno para os itens da lista não ficarem apertados */
+    .noti-item {
+        padding: 12px;
+        font-size: 14px;
     }
 }
