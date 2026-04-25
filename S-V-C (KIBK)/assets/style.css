@@ -14,12 +14,19 @@ nav a {
   color: #333;
   font-weight: bold;
 }
-.container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+.container {
+    width: 100%;
+    max-width: 1200px; /* Limita em telas grandes */
+    margin: 0 auto;
+    padding: 0 15px; /* Evita que o texto encoste na borda do celular */
+}
 .card {
   background: white;
+  width: auto; /* Deixa o grid controlar a largura */
+  box-sizing: border-box; /* Garante que o padding não "estoure" a largura */
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  padding: 15px;
+  padding: 20px;
   margin-bottom: 20px;
 }
 .btn {
@@ -32,15 +39,10 @@ nav a {
   font-weight: bold;
 }
 .btn:hover { background: #388E3C; }
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-}
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     margin-top: 10px;
 }
@@ -187,4 +189,29 @@ footer {
   100% {
     background-position: 0% 50%;
   }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem; /* Diminui o título no celular */
+    }
+
+    nav {
+        flex-direction: column; /* Empilha os links do menu verticalmente */
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .btn {
+        width: 100%; /* Botões ocupam a largura toda para facilitar o toque */
+        padding: 15px;
+        font-size: 1.1rem;
+    }
+
+    input[type="text"], 
+    input[type="number"], 
+    select {
+        width: 100% !important; /* Garante que inputs não fiquem pequenos */
+        font-size: 16px; /* Evita o zoom automático do iOS ao focar no campo */
+    }
 }

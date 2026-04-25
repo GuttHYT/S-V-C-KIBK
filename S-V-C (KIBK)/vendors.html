@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Vendedor - KIBK Lanches</title>
     <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -16,7 +17,9 @@
 
             <a href="vendors.html" style="text-decoration: none; color: #333;">Criar Produtos / Notificações</a>
 
+            <span id="admin-link" style="display:none;">
             <a href="admin.html" style="text-decoration: none; color: #d32f2f; font-weight: bold;">Painel Admin</a>
+            </span>
             
         </div>
 
@@ -58,8 +61,8 @@
                 <label>Imagem do Produto:</label>
                 <div style="display: flex; gap: 10px; margin-top: 5px;">
                     <input type="text" id="p-img" placeholder="Link da imagem (URL)" style="width: 100%; margin-bottom: 5px;">
-                    <p style="text-align: center; margin: 5px 0; font-size: 0.7rem;">OU</p>                    
-                    <div style="display: flex; gap: 5px; align-items: center;">
+                    <p style="text-align: center; margin: 5px 0; font-size: 0.7rem; display: none;">OU</p>
+                    <div style="display: flex; gap: 5px; align-items: center; display: none;">
                         <input type="file" id="p-file" accept="image/*" style="flex: 1;">
                         <button type="button" onclick="clearProductImage()" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Remover</button>
                     </div>

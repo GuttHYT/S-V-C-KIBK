@@ -34,21 +34,31 @@ async function loadUsersList() {
             userRow.className = "card"; // Usando a classe card do seu CSS
             userRow.style.marginBottom = "10px";
             
+            // 1. Traduz o cargo antes de montar o HTML
+            const cargoPt = u.role === 'seller' ? 'Vendedor' : 'Comprador';
+
+            // 2. Monta o HTML com a tradução e estrutura responsiva
             userRow.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
+                <div class="user-row" style="flex-wrap: wrap; gap: 10px;">
+                    <div style="flex: 1; min-width: 200px;">
                         <strong>${u.name}</strong> 
-                        ${u.isAdmin ? '<span class="badge-admin" style="background:#ffebee; color:#d32f2f; padding:2px 5px; border-radius:4px; font-size:10px;">ADMIN</span>' : ''}
-                        <br><small style="color:#666;">${u.email} | Cargo: ${u.role || 'user'}</small>
+                        ${u.isAdmin ? '<span class="badge-admin">ADMIN</span>' : ''}
+                        <br>
+                        <small style="color:#666;">
+                            ${u.email} | Cargo: ${cargoPt}
+                        </small>
                     </div>
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="toggleAdmin('${uid}', ${u.isAdmin || false})" class="btn" style="padding:5px; font-size:10px; background:#2196F3;">
+                    
+                    <div style="display:flex; gap:5px; flex-wrap: wrap;">
+                        <button onclick="toggleAdmin('${uid}', ${u.isAdmin || false})" class="btn" style="padding:5px 8px; font-size:10px; background:#2196F3; flex: 1;">
                             ${u.isAdmin ? 'Remover Admin' : 'Tornar Admin'}
                         </button>
-                        <button onclick="changeRole('${uid}', '${u.role}')" class="btn" style="padding:5px; font-size:10px; background:#FF9800;">
-                            Cargo
+                        
+                        <button onclick="changeRole('${uid}', '${u.role}')" class="btn" style="padding:5px 8px; font-size:10px; background:#FF9800; flex: 1;">
+                            Mudar Cargo
                         </button>
-                        <button onclick="deleteUserAccount('${uid}')" class="btn" style="padding:5px; font-size:10px; background:#f44336;">
+                        
+                        <button onclick="deleteUserAccount('${uid}')" class="btn" style="padding:5px 8px; font-size:10px; background:#f44336; flex: 1;">
                             Excluir
                         </button>
                     </div>
