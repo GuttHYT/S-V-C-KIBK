@@ -165,9 +165,9 @@ body {
 footer {
   position: relative;
   width: 20%;
-  height: auto;
+  height: 30%;
   text-align: center;
-  left: 39%;
+  left: 40%;
   right: calc(39%);
   color: white;
   background: linear-gradient(70deg, #000000, #4b0088, #8d0000, #000000);
