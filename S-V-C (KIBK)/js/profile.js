@@ -44,19 +44,59 @@ auth.onAuthStateChanged(user => {
 // Função para salvar
 async function updateProfile() {
     const user = auth.currentUser;
-    if (!user) return;
-
-    const newPhoto = document.getElementById('p-photo-url').value.trim();
+    const fileInput = document.getElementById('p-file-profile');
+    let newPhoto = document.getElementById('p-photo-url').value.trim();
     const newPix = document.getElementById('p-pix') ? document.getElementById('p-pix').value.trim() : "";
 
     try {
+        // Se subiu arquivo, ele ganha prioridade sobre o link
+        if (fileInput && fileInput.files.length > 0) {
+            newPhoto = await uploadFile(fileInput.files[0], 'profiles');
+        }
+
         await db.collection('users').doc(user.uid).update({
-            photoUrl: newPhoto,
+            photoUrl: newPhoto, // Se estiver vazio (via botão remover), limpa no banco
             pixKey: newPix
         });
+
         alert("Perfil atualizado com sucesso!");
         location.reload();
     } catch (error) {
         alert("Erro ao salvar: " + error.message);
     }
+}
+
+// CARREGAR FAVICON NA PÁGINA ATUAL
+db.collection('settings').doc('global').onSnapshot(doc => {
+    if (doc.exists) {
+        const s = doc.data();
+        
+        // Muda o título da aba
+        if (s.siteName) document.title = s.siteName;
+        
+        // Muda o Favicon
+        if (s.favicon) {
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
+            }
+            link.href = s.favicon;
+        }
+
+        // Aplica a cor global (isso altera a variável CSS --primary-color se você a usar)
+        if (s.themeColor) {
+            document.documentElement.style.setProperty('--primary-color', s.themeColor);
+            // Se o header tiver cor fixa no CSS, você pode forçar aqui:
+            const header = document.querySelector('header');
+            if(header) header.style.background = s.themeColor;
+        }
+    }
+});
+
+function clearProfileImage() {
+    document.getElementById('p-photo-url').value = "";
+    document.getElementById('p-file-profile').value = "";
+    document.getElementById('display-pic').src = "assets/default-user.png"; // Volta para a padrão
 }

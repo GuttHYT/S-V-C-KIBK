@@ -15,12 +15,12 @@
 
   <nav style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
       <div style="display: flex; gap: 15px; align-items: center;">
-          <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: var(--primary-color);">Início</a>
+          <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: #333;">Início</a>
           
           <a href="profile.html" style="text-decoration: none; color: #333;">Meu Perfil</a>
 
           <span id="seller-links" style="display:none;">
-            <a href="vendors.html" style="text-decoration: none; color: #333;">Vender</a>
+            <a href="vendors.html" style="text-decoration: none; color: #333;">Criar Produtos / Notificações</a>
           </span>
 
           <span id="admin-link" style="display:none;">
@@ -28,20 +28,15 @@
           </span>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 15px;">
-          <div id="noti-bell" style="display: none; cursor: pointer; position: relative;" onclick="toggleNotiBox()">
-            <span style="font-size: 1.3rem;">🔔</span>
-            <span id="noti-count" style="display: none; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; position: absolute; top: -5px; right: -5px;">0</span>
-            
-            <div id="noti-box" style="display: none; position: absolute; top: 35px; right: 0; background: white; border: 1px solid #ccc; width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000;">
-                <div style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Pedidos Recentes</div>
-                <div id="noti-list"></div>
-            </div>
-          </div>
+      
 
           <a href="#" onclick="logout()" style="text-decoration: none; color: #666; font-size: 0.9rem;">Sair</a>
       </div>
   </nav>
+
+  <div id="global-alert" style="display:none; background: #ffeb3b; color: #333; text-align: center; padding: 10px; font-weight: bold; border-bottom: 2px solid #fbc02d;">
+    <span id="alert-text"></span>
+  </div>
 
   <div class="container">
     <div id="announcements"></div>

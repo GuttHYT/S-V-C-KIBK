@@ -60,3 +60,32 @@ async function registerUser() {
     alert("Erro no registro: " + err.message);
   }
 }
+
+// CARREGAR FAVICON NA PÁGINA ATUAL
+db.collection('settings').doc('global').onSnapshot(doc => {
+    if (doc.exists) {
+        const s = doc.data();
+        
+        // Muda o título da aba
+        if (s.siteName) document.title = s.siteName;
+        
+        // Muda o Favicon
+        if (s.favicon) {
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
+            }
+            link.href = s.favicon;
+        }
+
+        // Aplica a cor global (isso altera a variável CSS --primary-color se você a usar)
+        if (s.themeColor) {
+            document.documentElement.style.setProperty('--primary-color', s.themeColor);
+            // Se o header tiver cor fixa no CSS, você pode forçar aqui:
+            const header = document.querySelector('header');
+            if(header) header.style.background = s.themeColor;
+        }
+    }
+});

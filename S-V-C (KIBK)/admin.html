@@ -1,21 +1,109 @@
-<div class="container">
-    <h1>Painel do Diretor (Admin)</h1>
-    
-    <div class="grid-admin">
-        <div class="card">
-            <h3>🎨 Estilo do Site</h3>
-            <label>Cor dos Botões:</label>
-            <input type="color" id="cfg-color" onchange="previewColor(this.value)">
-            <br><br>
-            <label>Nome da Loja:</label>
-            <input type="text" id="cfg-name" placeholder="Ex: Cantina do 3ºB">
-            <button class="btn" onclick="saveSettings()">Aplicar Globalmente</button>
-        </div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - KIBK</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        /* Estilos específicos para a Grade do Admin */
+        .grid-admin {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .admin-section-title {
+            border-left: 4px solid #d32f2f;
+            padding-left: 10px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .badge-admin {
+            background: #ffebee;
+            color: #d32f2f;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Painel do Diretor (Admin)</h1>
+    </header>
 
-        <div class="card">
-            <h3>👥 Usuários e Devedores</h3>
-            <div id="admin-orders-list">
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: #333;">← Voltar ao Início</a>
+        <span style="color: #d32f2f; font-weight: bold;">Modo Administrador</span>
+    </nav>
+
+    <div class="container">
+        <div class="grid-admin">
+            <div class="card">
+                <h3 class="admin-section-title">🎨 Personalização Global</h3>
+                
+                <div class="admin-config-group" style="margin-bottom: 20px;">
+                    <label>Nome da Loja (Título):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="cfg-name" placeholder="Ex: Cantina KIBK" style="flex: 1; padding: 8px;">
+                        <button class="btn-small" onclick="saveIndividual('siteName', 'cfg-name')">💾</button>
+                    </div>
                 </div>
+
+                <div class="admin-config-group" style="margin-bottom: 20px;">
+                    <label>URL do Favicon (Ícone da Aba):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="cfg-favicon" placeholder="Link da imagem .ico ou .png" style="flex: 1; padding: 8px;">
+                        <button class="btn-small" onclick="saveIndividual('favicon', 'cfg-favicon')">💾</button>
+                    </div>
+                </div>
+
+                <div class="admin-config-group" style="margin-bottom: 20px;">
+                    <label>Cor de Identidade (Botões/Header):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="color" id="cfg-color" style="flex: 1; height: 38px;">
+                        <button class="btn-small" onclick="saveIndividual('themeColor', 'cfg-color')">💾</button>
+                    </div>
+                </div>
+
+                <div class="admin-config-group" style="margin-bottom: 20px;">
+                    <label>Mensagem de Alerta (Topo do site):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="cfg-alert" placeholder="Ex: Hoje tem promoção de coxinha!" style="flex: 1; padding: 8px;">
+                        <button class="btn-small" onclick="saveIndividual('topAlert', 'cfg-alert')">💾</button>
+                    </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                
+                <button class="btn" onclick="saveAllSettings()" style="background: #2E7D32; width: 100%; font-weight: bold;">
+                    SALVAR TODAS AS ALTERAÇÕES
+                </button>
+            </div>
+
+            <div class="card">
+                <h3 class="admin-section-title">👥 Usuários e Permissões</h3>
+                <div id="admin-users-list">
+                    <p style="color:#999; text-align:center;">Carregando usuários...</p>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/firebase-config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

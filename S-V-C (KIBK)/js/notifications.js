@@ -43,18 +43,34 @@ function startOrderListener(uid, isAdmin) {
             const orderId = doc.id;
             if (order.status === "pendente") pendingCount++;
 
+            const estiloPgto = order.tipo === 'pagamento' 
+                ? { texto: 'PIX', cor: '#2E7D32', bg: '#e8f5e9' } 
+                : { texto: 'Entrega', cor: '#666', bg: '#f5f5f5' };
+
             const item = document.createElement('div');
-            item.style.cssText = "padding: 12px; border-bottom: 1px solid #eee; background: #fff; position: relative; animation: fadeIn 0.3s;";
+            item.style.cssText = "padding: 12px; border-bottom: 1px solid #eee; background: #fff; position: relative;";
             
             item.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding-right: 20px;">
-                    <strong style="color:#2E7D32;">${order.buyerName || 'Cliente'}</strong>
-                    <span style="background:#e8f5e9; padding:2px 6px; border-radius:4px; font-size:0.7rem;">${order.quantity}x</span>
+                <div style="padding-right: 20px;">
+                    <div style="font-size: 0.75rem; color: #666; font-weight: bold; text-transform: uppercase;">
+                        👤 Pedido de: ${order.buyerName || 'Usuário'}
+                    </div>
+                    
+                    <div style="font-size: 0.9rem; color: #333; margin: 4px 0;">
+                        <strong>${order.quantity}x</strong> ${order.productName}
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; background: ${estiloPgto.bg}; color: ${estiloPgto.cor}; border: 1px solid ${estiloPgto.cor};">
+                            ${estiloPgto.texto}
+                        </span>
+                        <small style="font-size: 0.6rem; color: #999;">
+                            ${order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
+                        </small>
+                    </div>
                 </div>
-                <div style="font-size: 0.85rem; color: #333; margin-top:3px;">
-                    ${order.productName}
-                </div>
-                <button onclick="deleteOrder('${orderId}')" style="position:absolute; top:5px; right:5px; background:none; border:none; color:#ff4444; cursor:pointer; font-weight:bold; font-size:16px; padding:5px;">
+
+                <button onclick="deleteOrder('${orderId}')" style="position:absolute; top:8px; right:8px; background:none; border:none; color:#ccc; cursor:pointer; font-size:18px;">
                     &times;
                 </button>
             `;

@@ -4,7 +4,7 @@
 
 <div class="container">
     <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center;">
-        <h2 style="color: var(--primary-color); margin-bottom: 20px;">👤 Meu Perfil</h2>
+        <h2 style="color: var(--primary-color); margin-bottom: 20px;">Meu Perfil</h2>
         
         <div style="position: relative; display: inline-block;">
             <img id="display-pic" src="assets/default-user.png" 
@@ -14,6 +14,10 @@
         <div style="margin-top: 15px;">
             <input type="text" id="p-photo-url" placeholder="Link da foto (URL)" 
                    style="width: 90%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="file" id="p-file-profile" accept="image/*" style="flex: 1;">
+                <button onclick="clearProfileImage()" style="background:#f44336; color:white; border:none; padding:8px; border-radius:5px;">Remover</button>
+            </div>     
         </div>
         
         <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
@@ -56,13 +60,17 @@
     </div>
 </div>
 
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 <script src="js/firebase-config.js"></script>
 
+<script src="js/main.js"></script> 
+
 <script src="js/profile.js"></script>
+
 
 </div>
 <footer>

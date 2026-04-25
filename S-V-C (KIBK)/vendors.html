@@ -7,19 +7,17 @@
 </head>
 <body>
     <header><h1>Gerenciar Meus Produtos</h1></header>
-    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">   
         <div style="display: flex; gap: 15px; align-items: center;">
-            <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: var(--primary-color);">Início</a>
-            
+            <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: #333;">Início</a>
+          
             <a href="profile.html" style="text-decoration: none; color: #333;">Meu Perfil</a>
 
-            <span id="seller-links" style="display:none;">
-                <a href="vendors.html" style="text-decoration: none; color: #333;">Vender</a>
-            </span>
+            <a href="vendors.html" style="text-decoration: none; color: #333;">Criar Produtos / Notificações</a>
 
-            <span id="admin-link" style="display:none;">
-                <a href="admin.html" style="text-decoration: none; color: #d32f2f; font-weight: bold;">Painel Admin</a>
-            </span>
+            <a href="admin.html" style="text-decoration: none; color: #d32f2f; font-weight: bold;">Painel Admin</a>
+            
         </div>
 
         <div style="display: flex; align-items: center; gap: 15px;">
@@ -48,8 +46,8 @@
             <h3 id="form-title">Adicionar Novo Produto</h3>
             <input type="hidden" id="product-id">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <input type="text" id="p-name" placeholder="Nome do Produto (Ex: Bolo de Pote)">
-                <input type="number" id="p-price" placeholder="Preço (Ex: 5.50)" step="0.01">
+                <input type="text" id="p-name" placeholder="Nome do Produto">
+                <input type="number" id="p-price" placeholder="Preço (Ex: 2.98)" step="0.01">
                 <input type="number" id="p-qty" placeholder="Quantidade em Estoque">
                 <select id="p-category">
                     <option value="doces">Doces / Paçoca / Amendoim</option>
@@ -59,9 +57,13 @@
             <div style="margin-top: 10px;">
                 <label>Imagem do Produto:</label>
                 <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <input type="text" id="p-img" placeholder="Link da Imagem (URL)" style="flex: 1;">
-                    <span style="align-self: center;">ou</span>
-                    <input type="file" id="p-file" accept="image/*" style="flex: 1;">
+                    <input type="text" id="p-img" placeholder="Link da imagem (URL)" style="width: 100%; margin-bottom: 5px;">
+                    <p style="text-align: center; margin: 5px 0; font-size: 0.7rem;">OU</p>                    
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <input type="file" id="p-file" accept="image/*" style="flex: 1;">
+                        <button type="button" onclick="clearProductImage()" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Remover</button>
+                    </div>
+                    <small id="img-status" style="display: block; margin-top: 5px; font-size: 0.7rem; color: #666;"></small>
                 </div>
                 <small id="upload-status" style="display: block; color: blue; margin-top: 5px;"></small>
             </div>
@@ -87,14 +89,22 @@
         <div id="my-products-list" class="product-grid">
             </div>
     </div>
-
+    
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <script src="js/firebase-config.js"></script>
-    <script src="js/notifications.js"></script>
+    
+    <script src="js/main.js"></script> 
     <script src="js/products.js"></script>
+
+    <script src="js/profile.js"></script>
+    
+    <script src="js/notifications.js"></script>
+    
+
 </body>
 <footer>
   <p>Criado por Gustavo Santana D. M.</p>
