@@ -1,30 +1,24 @@
 // Este código deve estar no topo do seu script principal
 auth.onAuthStateChanged(user => {
     if (user) {
-        // USUÁRIO LOGADO
-        console.log("Logado como:", user.email);
-        
-        // Se ele estiver na página de login ou index, manda para o dashboard
-        const paginasDeAcesso = ['login.html', 'index.html', 'cadastro.html'];
-        const pathAtual = window.location.pathname;
-        
-        if (paginasDeAcesso.some(pagina => pathAtual.includes(pagina))) {
-            window.location.href = 'dashboard.html';
-        }
+      // USUÁRIO LOGADO
+      console.log("Logado como:", user.email);
+      
+      // Se ele estiver na página de login ou index, manda para o dashboard
+      const paginasDeAcesso = ['login.html', 'index.html', 'cadastro.html'];
+      const pathAtual = window.location.pathname;
+      
+      if (paginasDeAcesso.some(pagina => pathAtual.includes(pagina))) {
+          window.location.href = 'dashboard.html';
+      }
 
-        // Continua o carregamento normal das funções
-        if (typeof checkUserRole === "function") checkUserRole(user.uid);
-        if (typeof loadProducts === "function") loadProducts();
+      // Continua o carregamento normal das funções
+      if (typeof checkUserRole === "function") checkUserRole(user.uid);
+      if (typeof loadProducts === "function") loadProducts();
         
     } else {
-        // USUÁRIO NÃO LOGADO
-        console.warn("Nenhum usuário detectado. Redirecionando...");
-
-        // Verificamos se ele JÁ NÃO ESTÁ na página de login para não criar um loop infinito
-        const pathAtual = window.location.pathname;
-        if (!pathAtual.includes('login.html') && !pathAtual.includes('index.html')) {
-            window.location.href = 'login.html';
-        }
+      // USUÁRIO NÃO LOGADO
+      console.warn("Nenhum usuário detectado. Redirecionando...");
     }
 });
 
