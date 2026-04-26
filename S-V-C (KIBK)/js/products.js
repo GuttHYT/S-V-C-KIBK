@@ -44,7 +44,7 @@ function loadMyProducts(isAdmin) {
                 <p style="font-size:0.7rem; color:#999;">Vendedor ID: ${p.sellerId || 'Desconhecido'}</p>
                 <div style="margin-top:10px; display: flex; gap: 5px;">
                     <button class="btn" style="padding:5px 10px; background:#2196F3; flex:1;" 
-                        onclick="editProduct('${doc.id}', '${p.name}', ${p.price}, ${p.quantity}, '${p.category}', '${p.imageUrl}', '${p.sellerId}')">
+                        onclick="editProduct('${doc.id}', '${p.name}', ${p.price}, ${p.quantity}, '${p.category}', '${p.imageUrl}')"
                         Editar
                     </button>
                     <button class="btn" style="padding:5px 10px; background:#f44336; flex:1;" 
@@ -58,25 +58,21 @@ function loadMyProducts(isAdmin) {
     });
 }
 
-function editProduct(id, name, price, qty, cat, img, sId) {
+function editProduct(id, name, price, qty, category, imageUrl) {
     document.getElementById('product-id').value = id;
     document.getElementById('p-name').value = name;
     document.getElementById('p-price').value = price;
     document.getElementById('p-qty').value = qty;
-    document.getElementById('p-category').value = cat;
-    document.getElementById('p-img').value = img;
-    
-    // Importante: Guardamos quem é o dono original do produto
-    currentEditingSellerId = sId; 
-    document.getElementById('form-title').innerText = "Editando: " + name;
-    window.scrollTo(0,0);
-}
+    document.getElementById('p-category').value = category;
 
+    document.getElementById('p-img').value = imageUrl || "";
+
+    window.scrollTo(0, 0);
+}
 // Variável global para evitar cliques múltiplos rápidos
 let isSaving = false;
 
 async function saveProduct() {
-    if (isSaving) return;
 
     const id = document.getElementById('product-id').value;
     const name = document.getElementById('p-name').value;
@@ -84,31 +80,31 @@ async function saveProduct() {
     const qty = document.getElementById('p-qty').value;
     const category = document.getElementById('p-category').value;
     
-    // 1. Captura o input de arquivo e o campo de texto do link
+    // IDs CORRETOS de acordo com o seu vendors.html
+    const imageUrlField = document.getElementById('p-img'); 
+    const imageUrl = imageUrlField ? imageUrlField.value.trim() : "";
     const fileInput = document.getElementById('p-file');
-    const urlInput = document.getElementById('p-img');
 
-    // 2. Define a URL inicial (pega o que está no campo de texto)
-    // Usamos || "" para garantir que se estiver vazio, vire uma string vazia e não undefined
-    let finalImageUrl = urlInput ? urlInput.value.trim() : "";
+    let finalImageUrl = "";
 
     if (!name || !price || !qty) return alert("Preencha os campos obrigatórios!");
 
     try {
-        isSaving = true;
 
-        // 3. PRIORIDADE: Se o usuário selecionou um arquivo novo, faz o upload
-        if (fileInput && fileInput.files.length > 0) {
-            console.log("Fazendo upload do arquivo...");
-            const uploadedUrl = await uploadFile(fileInput.files[0], 'products');
-            if (uploadedUrl) {
-                finalImageUrl = uploadedUrl;
-            }
+       // 1. Se tiver arquivo → upload tem prioridade
+        if (fileInput && fileInput.files[0]) {
+            console.log("Upload da imagem...");
+            finalImageUrl = await uploadFile(fileInput.files[0], 'products');
         }
 
-        // 4. Verificação de segurança: se após tudo ainda estiver vazio
-        if (!finalImageUrl || finalImageUrl === "undefined") {
-            return alert("Por favor, insira um link de imagem ou faça upload de um arquivo.");
+        // 2. Se NÃO tiver arquivo → usa link
+        else if (imageUrlField && imageUrlField.value.trim() !== "") {
+            finalImageUrl = imageUrlField.value.trim();
+        }
+
+        // 3. Se não tiver nada → imagem padrão
+        else {
+            finalImageUrl = "assets/default-food.png";
         }
 
         const productData = {
@@ -116,16 +112,14 @@ async function saveProduct() {
             price: parseFloat(price),
             quantity: parseInt(qty),
             category: category,
-            img: finalImageUrl, // Aqui salvamos a URL final validada
+            imageUrl: finalImageUrl,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
         if (id) {
-            productData.sellerId = currentEditingSellerId || currentUser.uid;
             await db.collection('products').doc(id).update(productData);
             alert("Produto atualizado!");
         } else {
-            productData.sellerId = currentUser.uid;
             productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
             await db.collection('products').add(productData);
             alert("Produto cadastrado!");
@@ -151,9 +145,23 @@ function clearForm() {
     document.getElementById('p-name').value = "";
     document.getElementById('p-price').value = "";
     document.getElementById('p-qty').value = "";
-    document.getElementById('p-img').value = "";
+    
+    const urlInput = document.getElementById('p-image-url');
+    if (urlInput) urlInput.value = "";
+
+    const fileInput = document.getElementById('p-file');
+    if (fileInput) fileInput.value = "";
+
     document.getElementById('form-title').innerText = "Adicionar Novo Produto";
-    currentEditingSellerId = null;
+}
+
+// Se tiver esta função no final do arquivo, ajuste-a também:
+function clearProductImage() {
+    const urlInput = document.getElementById('p-image-url');
+    if (urlInput) urlInput.value = "";
+    
+    const fileInput = document.getElementById('p-file');
+    if (fileInput) fileInput.value = "";
 }
 
 // CARREGAR FAVICON NA PÁGINA ATUAL
@@ -191,3 +199,8 @@ function clearProductImage() {
     document.getElementById('img-status').innerText = "Imagem removida (salve para aplicar)";
     document.getElementById('img-status').style.color = "red";
 }
+
+document.getElementById('p-img').addEventListener('input', function() {
+    const preview = document.getElementById('img-preview');
+    if (preview) preview.src = this.value;
+});
