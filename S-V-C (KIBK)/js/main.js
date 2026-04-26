@@ -1,38 +1,30 @@
 // Verifica login e permissões
 auth.onAuthStateChanged(user => {
-
     if (user) {
-        // EXISTE UM USUÁRIO LOGADO:
-        console.log("Usuário detectado:", user.email);
+        // USUÁRIO LOGADO
+        console.log("Logado como:", user.email);
         
-        // Se ele estiver na tela de login, mande-o para o dashboard
-        if (window.location.pathname.includes('login.html')) {
+        // Se ele estiver na página de login ou index, manda para o dashboard
+        const paginasDeAcesso = ['login.html', 'index.html', 'cadastro.html'];
+        const pathAtual = window.location.pathname;
+        
+        if (paginasDeAcesso.some(pagina => pathAtual.includes(pagina))) {
             window.location.href = 'dashboard.html';
         }
+
+        // Continua o carregamento normal das funções
+        if (typeof checkUserRole === "function") checkUserRole(user.uid);
+        if (typeof loadProducts === "function") loadProducts();
         
-        // Aqui você chama as funções para carregar os dados dele
-        checkUserRole(user.uid); 
     } else {
-        // NÃO HÁ USUÁRIO:
-        console.log("Nenhum usuário logado.");
-        
-        // Se ele tentar acessar uma página protegida, mande para o login
-        if (!window.location.pathname.includes('login.html') && 
-            !window.location.pathname.includes('index.html')) {
+        // USUÁRIO NÃO LOGADO
+        console.warn("Nenhum usuário detectado. Redirecionando...");
+
+        // Verificamos se ele JÁ NÃO ESTÁ na página de login para não criar um loop infinito
+        const pathAtual = window.location.pathname;
+        if (!pathAtual.includes('login.html') && !pathAtual.includes('index.html')) {
             window.location.href = 'login.html';
         }
-    }
-
-    if (user) {
-        // 1. Verifica as permissões (Admin/Vendedor) e mostra os links
-        checkUserRole(user.uid);
-        
-        // 2. CARREGA OS PRODUTOS (Essa linha é a que estava faltando!)
-        loadProducts(); 
-        
-    } else {
-        // Se não estiver logado, vai para o login
-        window.location.href = 'login.html';
     }
 });
 
