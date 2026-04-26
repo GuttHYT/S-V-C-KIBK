@@ -1,5 +1,28 @@
 // Verifica login e permissões
 auth.onAuthStateChanged(user => {
+
+    if (user) {
+        // EXISTE UM USUÁRIO LOGADO:
+        console.log("Usuário detectado:", user.email);
+        
+        // Se ele estiver na tela de login, mande-o para o dashboard
+        if (window.location.pathname.includes('login.html')) {
+            window.location.href = 'dashboard.html';
+        }
+        
+        // Aqui você chama as funções para carregar os dados dele
+        checkUserRole(user.uid); 
+    } else {
+        // NÃO HÁ USUÁRIO:
+        console.log("Nenhum usuário logado.");
+        
+        // Se ele tentar acessar uma página protegida, mande para o login
+        if (!window.location.pathname.includes('login.html') && 
+            !window.location.pathname.includes('index.html')) {
+            window.location.href = 'login.html';
+        }
+    }
+
     if (user) {
         // 1. Verifica as permissões (Admin/Vendedor) e mostra os links
         checkUserRole(user.uid);
@@ -121,6 +144,8 @@ async function loadProducts() {
 function logout() {
     auth.signOut().then(() => {
         window.location.href = 'login.html';
+    }).catch((error) => {
+        console.error("Erro ao sair:", error);
     });
 }
 

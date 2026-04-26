@@ -1,3 +1,28 @@
+// Este código deve estar no topo do seu script principal
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // EXISTE UM USUÁRIO LOGADO:
+        console.log("Usuário detectado:", user.email);
+        
+        // Se ele estiver na tela de login, mande-o para o dashboard
+        if (window.location.pathname.includes('login.html')) {
+            window.location.href = 'dashboard.html';
+        }
+        
+        // Aqui você chama as funções para carregar os dados dele
+        checkUserRole(user.uid); 
+    } else {
+        // NÃO HÁ USUÁRIO:
+        console.log("Nenhum usuário logado.");
+        
+        // Se ele tentar acessar uma página protegida, mande para o login
+        if (!window.location.pathname.includes('login.html') && 
+            !window.location.pathname.includes('index.html')) {
+            window.location.href = 'login.html';
+        }
+    }
+});
+
 // Login (já existia)
 function login() {
   const email = document.getElementById('email').value;
