@@ -1,30 +1,15 @@
 // Verifica login e permissões
 auth.onAuthStateChanged(user => {
     if (user) {
-        // USUÁRIO LOGADO
-        console.log("Logado como:", user.email);
+        // 1. Verifica as permissões (Admin/Vendedor) e mostra os links
+        checkUserRole(user.uid);
         
-        // Se ele estiver na página de login ou index, manda para o dashboard
-        const paginasDeAcesso = ['login.html', 'index.html', 'cadastro.html'];
-        const pathAtual = window.location.pathname;
-        
-        if (paginasDeAcesso.some(pagina => pathAtual.includes(pagina))) {
-            window.location.href = 'dashboard.html';
-        }
-
-        // Continua o carregamento normal das funções
-        if (typeof checkUserRole === "function") checkUserRole(user.uid);
-        if (typeof loadProducts === "function") loadProducts();
+        // 2. CARREGA OS PRODUTOS (Essa linha é a que estava faltando!)
+        loadProducts(); 
         
     } else {
-        // USUÁRIO NÃO LOGADO
-        console.warn("Nenhum usuário detectado. Redirecionando...");
-
-        // Verificamos se ele JÁ NÃO ESTÁ na página de login para não criar um loop infinito
-        const pathAtual = window.location.pathname;
-        if (!pathAtual.includes('login.html') && !pathAtual.includes('index.html')) {
-            window.location.href = 'login.html';
-        }
+        // Se não estiver logado, vai para o login
+        window.location.href = 'login.html';
     }
 });
 
