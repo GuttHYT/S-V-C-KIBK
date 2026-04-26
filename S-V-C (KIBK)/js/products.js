@@ -44,7 +44,7 @@ function loadMyProducts(isAdmin) {
                 <p style="font-size:0.7rem; color:#999;">Vendedor ID: ${p.sellerId || 'Desconhecido'}</p>
                 <div style="margin-top:10px; display: flex; gap: 5px;">
                     <button class="btn" style="padding:5px 10px; background:#2196F3; flex:1;" 
-                        onclick="editProduct('${doc.id}', '${p.name}', ${p.price}, ${p.quantity}, '${p.category}', '${p.imageUrl}')"
+                        <onclick="editProduct('${doc.id}', '${p.name}', ${p.price}, ${p.quantity}, '${p.category}', '${p.imageUrl}')">
                         Editar
                     </button>
                     <button class="btn" style="padding:5px 10px; background:#f44336; flex:1;" 
