@@ -16,6 +16,37 @@ auth.onAuthStateChanged(user => {
     }
 });
 
+function formatDateTime(timestamp) {
+    if (!timestamp || !timestamp.seconds) return 'Data não disponível';
+    
+    const date = new Date(timestamp.seconds * 1000);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Formatar hora
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+    
+    // Formatar data
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const fullDate = `${day}/${month}/${year}`;
+    
+    // Mostrar data relativa para hoje/ontem
+    if (diffDays === 0) {
+        return `Hoje às ${time}`;
+    } else if (diffDays === 1) {
+        return `Ontem às ${time}`;
+    } else if (diffDays < 7) {
+        return `Há ${diffDays} dias (${fullDate} às ${time})`;
+    } else {
+        return `${fullDate} às ${time}`;
+    }
+}
+
 function startOrderListener(uid, isAdmin) {
     let query = db.collection('orders');
     
@@ -23,13 +54,16 @@ function startOrderListener(uid, isAdmin) {
         query = query.where('sellerId', '==', uid);
     }
 
+    // Ordenar por data (mais recentes primeiro)
+    query = query.orderBy('createdAt', 'desc');
+
     query.onSnapshot(snapshot => {
         const list = document.getElementById('noti-list');
         const countBadge = document.getElementById('noti-count');
         
         if (!list) return;
 
-        list.innerHTML = ""; // Limpa a lista antes de reconstruir
+        list.innerHTML = "";
         let pendingCount = 0;
 
         if (snapshot.empty) {
@@ -47,6 +81,8 @@ function startOrderListener(uid, isAdmin) {
                 ? { texto: 'PIX', cor: '#2E7D32', bg: '#e8f5e9' } 
                 : { texto: 'Entrega', cor: '#666', bg: '#f5f5f5' };
 
+            const dataFormatada = formatDateTime(order.createdAt);
+
             const item = document.createElement('div');
             item.style.cssText = "padding: 12px; border-bottom: 1px solid #eee; background: #fff; position: relative;";
             
@@ -60,12 +96,12 @@ function startOrderListener(uid, isAdmin) {
                         <strong>${order.quantity}x</strong> ${order.productName}
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                         <span style="font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; background: ${estiloPgto.bg}; color: ${estiloPgto.cor}; border: 1px solid ${estiloPgto.cor};">
                             ${estiloPgto.texto}
                         </span>
-                        <small style="font-size: 0.6rem; color: #999;">
-                            ${order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
+                        <small style="font-size: 0.65rem; color: #999;">
+                            📅 ${dataFormatada}
                         </small>
                     </div>
                 </div>
@@ -88,12 +124,10 @@ function startOrderListener(uid, isAdmin) {
     });
 }
 
-// Função para deletar a notificação/pedido individualmente
 async function deleteOrder(orderId) {
     if (confirm("Deseja remover esta notificação?")) {
         try {
             await db.collection('orders').doc(orderId).delete();
-            // A lista se atualizará sozinha por causa do onSnapshot
         } catch (error) {
             alert("Erro ao excluir: " + error.message);
         }
@@ -106,7 +140,6 @@ function toggleNotiBox() {
 }
 
 async function clearAllNotifications() {
-    // 1. Confirmação de segurança
     const confirmar = confirm("Isso irá apagar permanentemente todas as suas notificações de pedidos. Continuar?");
     if (!confirmar) return;
 
@@ -114,13 +147,11 @@ async function clearAllNotifications() {
         const user = auth.currentUser;
         if (!user) return;
 
-        // Buscamos os dados do usuário para saber se é Admin ou Vendedor
         const userDoc = await db.collection('users').doc(user.uid).get();
         const userData = userDoc.data();
 
         let query = db.collection('orders');
 
-        // Filtro: Se não for admin, ele só apaga os pedidos dele
         if (!userData.isAdmin) {
             query = query.where('sellerId', '==', user.uid);
         }
@@ -132,7 +163,6 @@ async function clearAllNotifications() {
             return;
         }
 
-        // 2. Executa a limpeza em lote (batch)
         const batch = db.batch();
         snapshot.forEach(doc => {
             batch.delete(doc.ref);

@@ -1,83 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - KIBK Lanches</title>
     <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .day-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .day-checkbox:hover {
+            background: #e0e0e0;
+        }
+        
+        .day-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .day-checkbox input[type="checkbox"]:checked + span {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .selling-days-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .day-badge {
+            background: #2E7D32;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .no-days {
+            color: #999;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
+<body>
+    <header>
+        <h1>KIBK Lanches</h1>
+    </header>
 
-<div class="container">
-    <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center;">
-        <h2 style="color: var(--primary-color); margin-bottom: 20px;">Meu Perfil</h2>
-        
-        <div style="position: relative; display: inline-block;">
-            <img id="display-pic" src="assets/default-user.png" 
-                 style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color);">
-        </div>
-        
-        <div style="margin-top: 15px;">
-            <input type="text" id="p-photo-url" placeholder="Link da foto (URL)" 
-                   style="width: 90%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-            <div style="display: flex; gap: 10px; align-items: center; display: none;">
-                <input type="file" id="p-file-profile" accept="image/*" style="flex: 1;">
-                <button onclick="clearProfileImage()" style="background:#f44336; color:white; border:none; padding:8px; border-radius:5px;">Remover</button>
-            </div>     
-        </div>
-        
-        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
-        
-        <div style="text-align: left; margin-top: 20px;">
-    <div class="profile-info-item">
-        <strong>Nome Completo</strong>
-        <span id="span-name">Carregando...</span>
-    </div>
-    
-    <div class="profile-info-item">
-        <strong>E-mail de Acesso</strong>
-        <span id="span-email">Carregando...</span>
-    </div>
-    
-    <div class="profile-info-item">
-        <strong>WhatsApp / Contato</strong>
-        <span id="span-phone">Carregando...</span>
-    </div>
-    
-    <div id="pix-section" style="display:none;">
-        <label><strong>Minha Chave Pix (Vendedor)</strong></label>
-        <input type="text" id="p-pix" placeholder="CPF, E-mail ou Celular">
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: #333;">← Voltar ao Início</a>
+        <span id="page-title" style="color: #2E7D32; font-weight: bold;">Meu Perfil</span>
+    </nav>
+
+    <div class="container">
+        <div class="card" style="max-width: 500px; margin: 30px auto; text-align: center;">
+            <h2 id="page-title" style="color: var(--primary-color); margin-bottom: 20px;">Meu Perfil</h2>
             
-            <div id="pix-section" style="display:none; margin-top: 15px; border-top: 2px dashed #ddd; padding-top: 15px;">
-                <label style="font-weight: bold; color: #2E7D32;">🔑 Sua Chave Pix (Para receber pagamentos):</label>
-                <input type="text" id="p-pix" placeholder="CPF, E-mail ou Telefone" 
-                       style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #2E7D32;">
-                <p style="font-size: 0.7rem; color: #666; margin-top: 5px;">* Essa chave aparecerá para o cliente após a reserva.</p>
+            <div style="position: relative; display: inline-block;">
+                <img id="display-pic" src="assets/default-user.png" 
+                     style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color);">
             </div>
+            
+            <!-- Campos de edição (só visíveis no próprio perfil) -->
+            <div class="edit-field" style="margin-top: 15px;">
+                <input type="text" id="p-photo-url" placeholder="Link da foto (URL)" 
+                       style="width: 90%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 10px;">
+                <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+                    <input type="file" id="p-file-profile" accept="image/*" style="flex: 1;">
+                    <button onclick="clearProfileImage()" style="background:#f44336; color:white; border:none; padding:8px; border-radius:5px; cursor: pointer;">Remover</button>
+                </div>     
+            </div>
+            
+            <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+            
+            <div style="text-align: left; margin-top: 20px;">
+                <div class="profile-info-item">
+                    <strong>Nome Completo</strong>
+                    <span id="span-name">Carregando...</span>
+                </div>
+                
+                <div class="profile-info-item">
+                    <strong>E-mail de Acesso</strong>
+                    <span id="span-email">Carregando...</span>
+                </div>
+                
+                <div class="profile-info-item">
+                    <strong>WhatsApp / Contato</strong>
+                    <span id="span-phone">Carregando...</span>
+                </div>
+                
+                <!-- Seção de Avaliação do Vendedor -->
+                <div id="seller-rating" style="display:none; margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 10px; border-left: 4px solid #FFD700;">
+                    <h4 style="margin-bottom: 10px; color: #333;">🏆 Avaliação do Vendedor</h4>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div id="rating-stars" style="font-size: 1.5rem;"></div>
+                        <div>
+                            <span id="rating-value" style="font-size: 1.5rem; font-weight: bold; color: #FFD700;">0.0</span>
+                            <span id="rating-count" style="font-size: 0.9rem; color: #666; margin-left: 5px;">(0 avaliações)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dias de Venda -->
+                <div id="selling-days-section" style="display:none; margin: 20px 0; padding: 15px; background: #f0f8f0; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <h4 style="margin-bottom: 10px; color: #333;">📅 Dias de Venda</h4>
+                    
+                    <!-- Visualização pública (apenas leitura) -->
+                    <div id="selling-days-readonly" style="display:none;">
+                        <div id="days-display" class="selling-days-display"></div>
+                    </div>
+                    
+                    <!-- Edição (apenas para o próprio vendedor) -->
+                    <div id="selling-days-edit" class="edit-field" style="display:none;">
+                        <div class="days-grid">
+                            <label class="day-checkbox">
+                                <input type="checkbox" name="sellingDay" value="Segunda">
+                                <span>Segunda</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" name="sellingDay" value="Terça">
+                                <span>Terça</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" name="sellingDay" value="Quarta">
+                                <span>Quarta</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" name="sellingDay" value="Quinta">
+                                <span>Quinta</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" name="sellingDay" value="Sexta">
+                                <span>Sexta</span>
+                            </label>
+                        </div>
+                        <button class="btn" onclick="updateSellingDays()" style="margin-top: 15px; width: 100%;">
+                            Salvar Dias de Venda
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="pix-section" style="display:none; margin-top: 15px; border-top: 2px dashed #ddd; padding-top: 15px;">
+                    <label style="font-weight: bold; color: #2E7D32;">🔑 Chave Pix (Para receber pagamentos):</label>
+                    <input type="text" id="p-pix" placeholder="CPF, E-mail ou Telefone" 
+                           style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #2E7D32;">
+                    <p style="font-size: 0.7rem; color: #666; margin-top: 5px;">* Esta chave é usada para receber pagamentos.</p>
+                </div>
+            </div>
+
+            <button class="btn edit-field" style="margin-top: 25px; width: 100%; padding: 12px;" onclick="updateProfile()">
+                Salvar Alterações
+            </button>
+            
+            <button class="btn" style="margin-top: 10px; width: 100%; background: #666;" onclick="window.location.href='dashboard.html'">
+                Voltar ao Início
+            </button>
         </div>
-
-        <button class="btn" style="margin-top: 25px; width: 100%; padding: 12px;" onclick="updateProfile()">
-            💾 Salvar Alterações
-        </button>
-        
-        <button class="btn" style="margin-top: 10px; width: 100%; background: #666;" onclick="window.location.href='dashboard.html'">
-            Voltar ao Início
-        </button>
     </div>
-</div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/theme.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-<script src="js/firebase-config.js"></script>
+    <script src="js/finance.js"></script>
+    <script src="js/notifications-system.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            FinanceSystem.init();
+            NotificationSystem.init();
+        });
+    </script>
 
-<script src="js/main.js"></script> 
-
-<script src="js/profile.js"></script>
-
-
-</div>
-
-<p style="color: white;">.</p>
-
-<footer style="height: auto;">
-  <p>Criado por Gustavo Santana D. M.</p>
-  <p>&copy; Direitos reservados 2026</p>
-</footer>
+    <footer style="margin-top: 30px;">
+        <p>Criado por Gustavo Santana D. M.</p>
+        <p>&copy; Direitos reservados 2026</p>
+    </footer>
+</body>
+</html>

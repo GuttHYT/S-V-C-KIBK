@@ -13,19 +13,20 @@
   <div id="user-info" style="font-size: 0.9rem; margin-top: 5px;"></div>
 </header>
 
-  <nav style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-      <div style="display: flex; gap: 15px; align-items: center;">
-          <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: #333;">Início</a>
-          
-          <a href="profile.html" style="text-decoration: none; color: #333;">Meu Perfil</a>
+<nav style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+  <div style="display: flex; gap: 15px; align-items: center;">
+    <a href="dashboard.html" style="font-weight: bold; text-decoration: none; color: #333;">Início</a>
+    
+    <a href="profile.html" style="text-decoration: none; color: #333;">Meu Perfil</a>
 
-          <span id="seller-links" style="display:none;">
-            <a href="vendors.html" style="text-decoration: none; color: #333;">Meus Produtos / Notificações</a>
-          </span>
-
-          <span id="admin-link" style="display:none;">
-            <a href="admin.html" style="text-decoration: none; color: #d32f2f; font-weight: bold;">Painel Admin</a>
-          </span>
+    <span id="seller-links" style="display:none;">
+      <a href="vendors.html" style="text-decoration: none; color: #333;">Meus Produtos / Notificações</a>
+    </span>
+    
+    <span id="admin-link" style="display:none;">
+      <a href="admin.html" style="text-decoration: none; color: #d32f2f; font-weight: bold;">Painel Admin</a>
+    </span>
+    <button id="theme-toggle" class="theme-toggle" title="Alternar tema">🌙</button>
       </div>
 
       
@@ -55,8 +56,13 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script> <script src="js/firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  
+  <script src="js/firebase-config.js"></script>
+  <script src="js/upload.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/theme.js"></script>
+  
 </body>
 <footer>
   <p>Criado por Gustavo Santana D. M.</p>

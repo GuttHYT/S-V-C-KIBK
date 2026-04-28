@@ -4,7 +4,7 @@ auth.onAuthStateChanged(user => {
         // 1. Verifica as permissões (Admin/Vendedor) e mostra os links
         checkUserRole(user.uid);
         
-        // 2. CARREGA OS PRODUTOS (Essa linha é a que estava faltando!)
+        // 2. CARREGA OS PRODUTOS
         loadProducts(); 
         
     } else {
@@ -52,39 +52,72 @@ async function loadProducts() {
     const containerSalgados = document.getElementById('category-salgados');
     const containerDoces = document.getElementById('category-doces');
 
+    if (!containerSalgados || !containerDoces) return;
+    
+    // Carregar dados dos vendedores
     const vendorsData = {};
     const vendorsSnap = await db.collection('users').get();
     vendorsSnap.forEach(vDoc => {
         vendorsData[vDoc.id] = vDoc.data();
     });
-
-    if (!containerSalgados || !containerDoces) return;
     
-
     // Listener em tempo real para os produtos
     db.collection('products').onSnapshot(async (snapshot) => {
         containerSalgados.innerHTML = "";
         containerDoces.innerHTML = "";
-
-        // Buscamos todos os vendedores para validar o PIX
-        const vendorsSnap = await db.collection('users').where('role', '==', 'seller').get();
-        const vendorsPix = {};
-        vendorsSnap.forEach(v => vendorsPix[v.id] = v.data().pixKey);
-
+        
+        // Carregar todas as avaliações do usuário atual
+        const userId = auth.currentUser ? auth.currentUser.uid : null;
+        const userRatings = {};
+        
+        if (userId) {
+            const ratingsSnap = await db.collection('ratings')
+                .where('userId', '==', userId)
+                .get();
+            
+            ratingsSnap.forEach(doc => {
+                const rating = doc.data();
+                userRatings[rating.productId] = {
+                    ratingId: doc.id,
+                    stars: rating.stars
+                };
+            });
+        }
+        
+        // Calcular média de estrelas para cada produto
+        const productRatings = {};
+        const allRatingsSnap = await db.collection('ratings').get();
+        
+        allRatingsSnap.forEach(doc => {
+            const rating = doc.data();
+            if (!productRatings[rating.productId]) {
+                productRatings[rating.productId] = {
+                    totalStars: 0,
+                    count: 0
+                };
+            }
+            productRatings[rating.productId].totalStars += rating.stars;
+            productRatings[rating.productId].count++;
+        });
+        
         snapshot.forEach(doc => {
             const product = doc.data();
             const productId = doc.id;
             const isEsgotado = product.quantity <= 0;
-
-            // Buscamos o nome do vendedor no objeto de vendedores que carregamos no início da função
-            // Se não encontrar (vendedor deletado, por exemplo), mostra "Vendedor Desconhecido"
+            
+            // Buscar o nome do vendedor
             const nomeVendedor = vendorsData[product.sellerId] ? vendorsData[product.sellerId].name : "Vendedor Desconhecido";
-
+            
+            // Calcular média de avaliações
+            const ratingData = productRatings[productId] || { totalStars: 0, count: 0 };
+            const avgRating = ratingData.count > 0 ? (ratingData.totalStars / ratingData.count) : 0;
+            const userRating = userRatings[productId] || null;
+            
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <div style="position:relative;">
-                    <img src="${product.imageUrl || 'assets/default-food.png'}" style="width:100%; border-radius:8px;">
+                    <img src="${product.imageUrl || 'assets/default-food.png'}" style="width:100%; border-radius:8px; height:150px; object-fit:cover;">
                     ${isEsgotado ? '<span style="position:absolute; top:10px; left:10px; background:rgba(255,0,0,0.8); color:white; padding:5px; border-radius:5px; font-weight:bold;">ESGOTADO</span>' : ''}
                 </div>
                 
@@ -93,6 +126,37 @@ async function loadProducts() {
                     <span style="font-size: 0.7rem; background: #f0f0f0; padding: 2px 6px; border-radius: 10px; color: #666;">
                         👤 ${nomeVendedor}
                     </span>
+                </div>
+                
+                <!-- Sistema de Avaliação -->
+                <div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="star-rating" data-product-id="${productId}">
+                            ${generateStars(avgRating, userRating ? userRating.stars : 0)}
+                        </div>
+                        <span style="font-size: 0.8rem; color: #666;">
+                            ${avgRating > 0 ? avgRating.toFixed(1) : '0.0'} (${ratingData.count} ${ratingData.count === 1 ? 'avaliação' : 'avaliações'})
+                        </span>
+                    </div>
+                    ${userId ? `
+                        <div style="margin-top: 8px;">
+                            <p style="font-size: 0.75rem; color: #666; margin-bottom: 5px;">
+                                ${userRating ? 'Sua avaliação (clique para alterar):' : 'Sua avaliação:'}
+                            </p>
+                            <div style="display: flex; gap: 2px;">
+                                ${[1,2,3,4,5].map(star => `
+                                    <span onclick="rateProduct('${productId}', ${star})" 
+                                          style="cursor: pointer; font-size: 1.5rem; transition: 0.2s;"
+                                          onmouseover="highlightStars('${productId}', ${star})"
+                                          onmouseout="resetStars('${productId}')"
+                                          class="star-${productId}"
+                                          data-star="${star}">
+                                        ${star <= (userRating ? userRating.stars : 0) ? '⭐' : '☆'}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '<p style="font-size: 0.75rem; color: #999; margin-top: 5px;">Faça login para avaliar</p>'}
                 </div>
 
                 <p style="font-size:0.9rem; color:#666; margin-top: 5px;">Disponível: <strong>${product.quantity}</strong></p>
@@ -110,12 +174,140 @@ async function loadProducts() {
                         💳 Pagar Agora (Pix)
                     </button>
                 </div>
+                
+                <button onclick="window.location.href='profile.html?uid=${product.sellerId}'" 
+                        style="margin-top: 10px; background: #2196F3; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; width: 100%;">
+                    Ver Perfil do Vendedor
+                </button>
             `;
 
             if (product.category === 'salgados') containerSalgados.appendChild(card);
             else containerDoces.appendChild(card);
         });
     });
+}
+
+// Função para gerar estrelas de exibição
+function generateStars(average, userStars) {
+    const fullStars = Math.floor(average);
+    const halfStar = average - fullStars >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+    
+    let starsHtml = '';
+    for (let i = 0; i < fullStars; i++) starsHtml += '⭐';
+    if (halfStar) starsHtml += '✨'; // Meia estrela
+    for (let i = 0; i < emptyStars; i++) starsHtml += '☆';
+    
+    return starsHtml;
+}
+
+// Funções para o sistema de avaliação
+async function rateProduct(productId, stars) {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("Faça login para avaliar produtos!");
+        return;
+    }
+    
+    try {
+        // Verifica se já existe uma avaliação deste usuário para este produto
+        const existingRating = await db.collection('ratings')
+            .where('userId', '==', user.uid)
+            .where('productId', '==', productId)
+            .get();
+        
+        if (existingRating.empty) {
+            // Nova avaliação
+            await db.collection('ratings').add({
+                userId: user.uid,
+                productId: productId,
+                stars: stars,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log("Avaliação criada com sucesso!");
+        } else {
+            // Atualizar avaliação existente
+            const ratingDoc = existingRating.docs[0];
+            await db.collection('ratings').doc(ratingDoc.id).update({
+                stars: stars,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log("Avaliação atualizada com sucesso!");
+        }
+        
+        // Atualiza a média no perfil do vendedor
+        await updateSellerRating(productId);
+        
+    } catch (error) {
+        console.error("Erro ao avaliar:", error);
+        alert("Erro ao salvar avaliação: " + error.message);
+    }
+}
+
+// Função para atualizar a média do vendedor
+async function updateSellerRating(productId) {
+    try {
+        // Busca o produto para saber o vendedor
+        const productDoc = await db.collection('products').doc(productId).get();
+        if (!productDoc.exists) return;
+        
+        const sellerId = productDoc.data().sellerId;
+        
+        // Busca todos os produtos do vendedor
+        const productsSnap = await db.collection('products')
+            .where('sellerId', '==', sellerId)
+            .get();
+        
+        let totalStars = 0;
+        let totalRatings = 0;
+        
+        // Para cada produto, busca suas avaliações
+        for (const prodDoc of productsSnap.docs) {
+            const ratingsSnap = await db.collection('ratings')
+                .where('productId', '==', prodDoc.id)
+                .get();
+            
+            ratingsSnap.forEach(ratingDoc => {
+                totalStars += ratingDoc.data().stars;
+                totalRatings++;
+            });
+        }
+        
+        // Calcula a média
+        const averageRating = totalRatings > 0 ? (totalStars / totalRatings) : 0;
+        
+        // Atualiza no perfil do vendedor
+        await db.collection('users').doc(sellerId).update({
+            sellerRating: averageRating,
+            totalRatings: totalRatings,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+    } catch (error) {
+        console.error("Erro ao atualizar rating do vendedor:", error);
+    }
+}
+
+// Efeitos visuais para as estrelas
+function highlightStars(productId, stars) {
+    const starElements = document.querySelectorAll(`.star-${productId}`);
+    starElements.forEach(element => {
+        const starNum = parseInt(element.getAttribute('data-star'));
+        if (starNum <= stars) {
+            element.textContent = '⭐';
+            element.style.transform = 'scale(1.2)';
+        } else {
+            element.textContent = '☆';
+            element.style.transform = 'scale(1)';
+        }
+    });
+}
+
+function resetStars(productId) {
+    const starElements = document.querySelectorAll(`.star-${productId}`);
+    // Recarrega a página para resetar (temporário)
+    // Em uma versão mais avançada, você pode armazenar o estado original
 }
 
 function logout() {
@@ -134,7 +326,7 @@ async function orderProduct(productId, tipo) {
     const chosenQty = parseInt(qtyInput.value);
 
     try {
-        // 1. BUSCAR O NOME REAL DO COMPRADOR (Uma única vez)
+        // 1. BUSCAR O NOME REAL DO COMPRADOR
         const userDoc = await db.collection('users').doc(user.uid).get();
         const userDataComprador = userDoc.data();
         const nomeRealDoComprador = userDataComprador.name || "Cliente";
@@ -150,7 +342,7 @@ async function orderProduct(productId, tipo) {
         const sellerDoc = await db.collection('users').doc(product.sellerId).get();
         const sellerData = sellerDoc.data();
 
-        // 4. CRIAR O PEDIDO NO BANCO (Aqui salvamos o buyerName corretamente)
+        // 4. CRIAR O PEDIDO NO BANCO
         await db.collection('orders').add({
             buyerId: user.uid,
             buyerName: nomeRealDoComprador, 

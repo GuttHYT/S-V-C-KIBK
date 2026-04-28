@@ -1,44 +1,94 @@
 * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
-body { background: #f4f4f4; color: #333; }
+
+:root {
+  --primary-color: #2E7D32;
+  --bg-color: #f4f4f4;
+  --text-color: #333;
+  --card-bg: #ffffff;
+  --nav-bg: #ffffff;
+  --border-color: #eee;
+  --shadow: 0 2px 5px rgba(0,0,0,0.1);
+  --hover-bg: #f5f5f5;
+  --input-bg: #ffffff;
+  --input-border: #ccc;
+}
+
+/* Modo Escuro */
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #e0e0e0;
+  --card-bg: #2d2d2d;
+  --nav-bg: #2d2d2d;
+  --border-color: #404040;
+  --shadow: 0 2px 5px rgba(0,0,0,0.3);
+  --hover-bg: #3d3d3d;
+  --input-bg: #3d3d3d;
+  --input-border: #555;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
 header {
-  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  background: linear-gradient(135deg, var(--primary-color), #1b5e20);
   color: white;
   padding: 15px;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
-nav { background: white; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+nav {
+  background: var(--nav-bg);
+  padding: 10px;
+  box-shadow: var(--shadow);
+  transition: background 0.3s;
+}
+
 nav a {
   margin: 0 15px;
   text-decoration: none;
-  color: #333;
+  color: var(--text-color);
   font-weight: bold;
+  transition: color 0.3s;
 }
+
 .container {
   width: 100%;
-  max-width: 1200px; /* Limita em telas grandes */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 15px; /* Evita que o texto encoste na borda do celular */
+  padding: 0 15px;
 }
+
 .card {
-  background: white;
-  width: auto; /* Deixa o grid controlar a largura */
-  box-sizing: border-box; /* Garante que o padding não "estoure" a largura */
+  background: var(--card-bg);
+  width: auto;
+  box-sizing: border-box;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow);
   padding: 20px;
   margin-bottom: 20px;
+  transition: background 0.3s, box-shadow 0.3s;
 }
+
 .btn {
-  background: #4CAF50;
+  background: var(--primary-color);
   color: white;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+  transition: 0.3s;
 }
-.btn:hover { background: #388E3C; }
+
+.btn:hover {
+  filter: brightness(1.2);
+  transform: translateY(-2px);
+}
 
 .product-grid {
   display: grid;
@@ -52,33 +102,25 @@ nav a {
   object-fit: cover;
 }
 
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-:root {
-  --primary-color: #2E7D32; /* Cor padrão que você poderá mudar no Admin */
-  --bg-color: #f4f4f9;
-}
-
-body {
-  background-color: var(--bg-color);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 10px 20px;
+input[type="text"], 
+input[type="number"], 
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select,
+textarea {
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--input-border);
+  padding: 10px;
   border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s;
 }
 
-.btn:hover {
-  filter: brightness(1.2);
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
 }
 
 /* Estilo para a foto de perfil circular */
@@ -91,119 +133,95 @@ body {
   margin-bottom: 15px;
 }
 
-/* Modal de Escolha de Pagamento */
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-/* --- ESTILOS DA PÁGINA DE PERFIL --- */
-
-.profile-pic {
-  width: 130px;
-  height: 130px;
+/* Toggle de tema */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--text-color);
+  color: var(--text-color);
+  padding: 8px 12px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid var(--primary-color);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  margin-bottom: 15px;
-  background-color: #eee;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: 0.3s;
 }
 
-#pix-section {
-  background-color: #e8f5e9; /* Um verde bem clarinho */
-  padding: 15px;
-  border-radius: 8px;
-  border-left: 5px solid var(--primary-color);
-  margin-top: 20px;
+.theme-toggle:hover {
+  background: var(--hover-bg);
+  transform: rotate(30deg);
 }
 
-#pix-section label {
-  display: block;
-  margin-bottom: 8px;
-  color: #1b5e20;
-  font-size: 0.9rem;
+/* Badges e tags */
+.badge-admin {
+  background: #ffebee;
+  color: #d32f2f;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
 }
 
-#p-pix {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-family: monospace; /* Estilo de código para chaves Pix */
-  font-size: 1rem;
-}
-
-.profile-info-item {
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-}
-
-.profile-info-item strong {
-  color: #555;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  display: block;
-}
-
-.profile-info-item span {
-  font-size: 1.1rem;
-  color: #222;
-  font-weight: 500;
-}
-
-/* Efeito suave ao focar nos inputs */
-#p-photo-url:focus, #p-pix:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
-}
-
-footer {
-  position: relative;
-  width: 98%;
-  height: 30%;
-  text-align: center;
-  left: 1%;
-  right:auto;
+.day-badge {
+  background: var(--primary-color);
   color: white;
-  background: linear-gradient(70deg, #000000, #4b0088, #8d0000, #000000);
-  background-size: 400% 400%;
-  padding: 8px 15px;
+  padding: 5px 10px;
   border-radius: 15px;
-  cursor: default;
-  font-weight: bolder;
-  animation: mudarFundo 5s ease infinite;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-block;
 }
 
-@keyframes mudarFundo {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Estatísticas */
+.stat-card {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border-left: 4px solid var(--primary-color);
+  transition: 0.3s;
 }
 
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Animações */
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
   header h1 {
-    font-size: 1.5rem; /* Diminui o título no celular */
+    font-size: 1.5rem;
   }
 
   nav {
-    flex-direction: column; /* Empilha os links do menu verticalmente */
+    flex-direction: column;
     gap: 10px;
     padding: 15px;
   }
 
   .btn {
-    width: 100%; /* Botões ocupam a largura toda para facilitar o toque */
+    width: 100%;
     padding: 15px;
     font-size: 1.1rem;
   }
@@ -211,34 +229,45 @@ footer {
   input[type="text"], 
   input[type="number"], 
   select {
-    width: 100% !important; /* Garante que inputs não fiquem pequenos */
-    font-size: 16px; /* Evita o zoom automático do iOS ao focar no campo */
+    width: 100% !important;
+    font-size: 16px;
   }
 }
 
 @media (max-width: 600px) {
   #noti-box {
-    /* Fixa a posição no centro da tela, independente de onde está o botão */
     position: fixed !important;
-    top: 80px !important;    /* Distância do topo */
-    left: 5% !important;     /* Margem de 5% na esquerda */
-    right: 5% !important;    /* Margem de 5% na direita */
-    width: 90% !important;   /* Ocupa 90% da largura da tela */
+    top: 80px !important;
+    left: 5% !important;
+    right: 5% !important;
+    width: 90% !important;
     max-width: none !important;
     transform: none !important;
-    z-index: 10000;          /* Garante que fica na frente de tudo */
+    z-index: 10000;
   }
 
-  /* Ajuste interno para os itens da lista não ficarem apertados */
   .noti-item {
     padding: 12px;
     font-size: 14px;
   }
+}
 
-  .img-preview {
-    width:15%;
-    height: 8%;
-    margin-top:2px;
-    background-color: #afafaf; 
-  }
+footer {
+  position: relative;
+  width: 98%;
+  text-align: center;
+  left: 1%;
+  color: white;
+  background: linear-gradient(70deg, #000000, #4b0088, #8d0000, #000000);
+  background-size: 400% 400%;
+  padding: 8px 15px;
+  border-radius: 15px;
+  font-weight: bolder;
+  animation: mudarFundo 5s ease infinite;
+}
+
+@keyframes mudarFundo {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

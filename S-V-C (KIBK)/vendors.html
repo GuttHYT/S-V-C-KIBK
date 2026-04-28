@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            
+            <a href="#" onclick="logout()" style="text-decoration: none; color: #666; font-size: 0.9rem;">Sair</a>
         </div>
     </nav>
 
@@ -76,16 +76,6 @@
                 <button class="btn" onclick="saveProduct()">Salvar Produto</button>
                 <button class="btn" style="background:#666;" onclick="clearForm()">Cancelar</button>
             </div>
-            <div>
-                <h3>Configurar meus dias de venda</h3>
-                <p>Marque os dias que você costuma levar os produtos:</p>
-                <label><input type="checkbox" class="days" value="Segunda"> Seg</label>
-                <label><input type="checkbox" class="days" value="Terça"> Ter</label>
-                <label><input type="checkbox" class="days" value="Quarta"> Qua</label>
-                <label><input type="checkbox" class="days" value="Quinta"> Qui</label>
-                <label><input type="checkbox" class="days" value="Sexta"> Sex</label>
-                <button class="btn" onclick="updateSellingDays()" style="margin-top:10px; display:block;">Atualizar Dias</button>
-            </div>
         </div>
 
         <hr>
@@ -93,7 +83,39 @@
         <div id="my-products-list" class="product-grid">
             </div>
     </div>
-    
+
+    <!-- Calculadora de Lucros -->
+<div id="calculator-section" style="margin-top: 30px;">
+    <div class="card">
+        <h3>🧮 Calculadora Financeira</h3>
+        <div style="display: grid; gap: 10px; margin-top: 15px;">
+            <div>
+                <label>Preço de Venda (R$):</label>
+                <input type="number" id="calc-selling-price" step="0.01" placeholder="Ex: 5.00" style="width: 100%;">
+            </div>
+            <div>
+                <label>Custo de Produção (R$):</label>
+                <input type="number" id="calc-cost-price" step="0.01" placeholder="Ex: 2.00" style="width: 100%;">
+            </div>
+            <div>
+                <label>Custo de Embalagem (R$):</label>
+                <input type="number" id="calc-packaging" step="0.01" placeholder="Ex: 0.50" style="width: 100%;">
+            </div>
+            <div>
+                <label>Quantidade Vendida:</label>
+                <input type="number" id="calc-quantity" placeholder="Ex: 10" style="width: 100%;">
+            </div>
+            <div>
+                <label>Outros Custos (R$):</label>
+                <input type="number" id="calc-other" step="0.01" placeholder="Ex: 5.00" value="0" style="width: 100%;">
+            </div>
+            <button class="btn" onclick="FinanceSystem.performCalculation()" style="width: 100%;">
+                Calcular Lucro
+            </button>
+        </div>
+        <div id="calc-result" style="margin-top: 20px; display: none;"></div>
+    </div>
+</div>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -101,20 +123,25 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <script src="js/firebase-config.js"></script>
     
+    <script src="js/upload.js"></script>
     <script src="js/main.js"></script> 
     <script src="js/products.js"></script>
-
     <script src="js/profile.js"></script>
-    
     <script src="js/notifications.js"></script>
-    
+    <script src="js/theme.js"></script>
 
+    <script src="js/finance.js"></script>
+    <script src="js/notifications-system.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            FinanceSystem.init();
+            NotificationSystem.init();
+        });
+    </script>
+
+    <footer>
+        <p>Criado por Gustavo Santana D. M.</p>
+        <p>&copy; Direitos reservados 2026</p>
+    </footer>
 </body>
-<footer>
-  <p>Criado por Gustavo Santana D. M.</p>
-  <p>&copy; Direitos reservados 2026</p>
-</footer>
-
-<p style="color: white;">.</p>
-
 </html>
